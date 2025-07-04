@@ -104,6 +104,8 @@ Netlify has made this easy. If you click the deploy button below, it will guide 
 
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/ondrabus/kontent-url-slug-history-custom-element)
 
+Don't forget to add `npm run build` to the build command in Netlify settings, so that the TypeScript code is compiled before deployment.
+
 ## What is Saved?
 
 The value is an array of strings (old URL slugs).
