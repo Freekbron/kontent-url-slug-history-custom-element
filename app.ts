@@ -1,4 +1,4 @@
-import { createDeliveryClient, DeliveryClient } from "@kentico/kontent-delivery";
+import { createDeliveryClient, DeliveryClient } from "@kontent-ai/delivery-sdk";
 import { IContext } from "./customElementModels/IContext";
 import { ICustomElement } from "./customElementModels/ICustomElement";
 import { IElement } from "./customElementModels/IElement";
