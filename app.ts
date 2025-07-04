@@ -26,7 +26,7 @@ const initCustomElement = (element: IElement, context: IContext) => {
 
     history = JSON.parse(element.value) ?? []
     deliveryClient = createDeliveryClient({
-        projectId: projectId,
+        environmentId: projectId,
         globalHeaders: () => [
             {
                 header: 'X-KC-Wait-For-Loading-New-Content',
