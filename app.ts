@@ -4,18 +4,22 @@ import { ICustomElement } from "./customElementModels/ICustomElement";
 import { IElement } from "./customElementModels/IElement";
 
 const customElement = window['CustomElement'] as ICustomElement
-let urlSlugElementCodename: string = null
-let contentItemCodename: string = null
-let currentPublishedUrlSlug: string = null
-let pagePublished: boolean = null
+let urlSlugElementCodename: string | null = null
+let contentItemCodename: string | null = null
+let currentPublishedUrlSlug: string | null = null
+let pagePublished: boolean | null = null
 let initialized: boolean = false
-let deliveryClient: DeliveryClient = null
-let projectId: string = null
+let deliveryClient: DeliveryClient | null = null
+let projectId: string | null = null
 let history: string[] = []
 let disabled: boolean = false
 const label = document.querySelector("#slug-container")
 
 const initCustomElement = (element: IElement, context: IContext) => {
+    if (!element.config || !context){
+        throw new Error('Element and context must be defined.')
+    }
+
     urlSlugElementCodename = element.config['urlSlugElementCodename']
     if (!urlSlugElementCodename){
         throw new Error('The "urlSlugElementCodename" must be defined in custom element config.')
@@ -24,7 +28,7 @@ const initCustomElement = (element: IElement, context: IContext) => {
     contentItemCodename = context.item.codename
     disabled = element.disabled
 
-    history = JSON.parse(element.value) ?? []
+    history = element.value ? JSON.parse(element.value) : []
     deliveryClient = createDeliveryClient({
         environmentId: projectId,
         globalHeaders: () => [
@@ -42,7 +46,7 @@ const initCustomElement = (element: IElement, context: IContext) => {
                 .toPromise()
                 .then(res => {
                     if (res.response.status == 200){
-                        currentPublishedUrlSlug = res.data.item.elements[urlSlugElementCodename].value
+                        currentPublishedUrlSlug = res.data.item.elements[urlSlugElementCodename as string].value
                         pagePublished = true
                     }})
                 .catch(err => {
@@ -55,7 +59,7 @@ const initCustomElement = (element: IElement, context: IContext) => {
                 })
         } else {
             initialized = true
-            document.querySelector('.manual-input').remove()
+            document.querySelector('.manual-input')?.remove()
             displayHistory()
         }
     } catch (error) {
@@ -65,8 +69,8 @@ const initCustomElement = (element: IElement, context: IContext) => {
 }
 
 const elementChanged = (changedElementCodenames: string[]) => {
-    if (changedElementCodenames.includes(urlSlugElementCodename)) {
-        customElement.getElementValue(urlSlugElementCodename, processNewUrlSlug)
+    if (changedElementCodenames.includes(urlSlugElementCodename as string)) {
+        customElement.getElementValue(urlSlugElementCodename as string, processNewUrlSlug)
     }
 }
 
@@ -103,7 +107,7 @@ const addSlugToHistory = (urlSlug: string) => {
     displayHistory()
 }
 
-document.querySelector("#add-button").addEventListener(
+document.querySelector("#add-button")?.addEventListener(
     'click',
     (e) => {
         const urlSlug = (document.querySelector("input[name=newUrlSlug]") as HTMLInputElement).value
@@ -116,12 +120,15 @@ document.querySelector("#add-button").addEventListener(
 )
 
 const displayHistory = () => {
+    if (!label) {
+        return;
+    }
     if (!initialized) {
         label.innerHTML = '(loading...)'
         return
     }
 
-    if (Array.isArray(history) && history.length > 0){
+    if (Array.isArray(history) && history.length > 0 && label){
         label.innerHTML = `<div class="list">
             ${history.map(historySlugItem => {
                 if (disabled || historySlugItem !== currentPublishedUrlSlug){
@@ -152,8 +159,12 @@ const displayHistory = () => {
             .forEach(btn =>
                 btn.addEventListener(
                     'click',
-                    (e) =>
-                        removeSlugFromHistory((e.currentTarget as HTMLButtonElement).getAttribute('data-slug'))))
+                    (e) => {
+                        const slug = (e.currentTarget as HTMLButtonElement).getAttribute('data-slug')
+                        if (slug) {
+                            removeSlugFromHistory(slug)
+                        }
+                    }))
     }
 }
 
