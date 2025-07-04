@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "esbuild app.ts --outfile=app.js --bundle --watch",
-    "build": "esbuild app.ts --outfile=app.js --bundle"
+    "build": "esbuild app.ts --outfile=app.js --bundle",
+    "serve": "http-server -p 8080 -c-1",
+    "serve:https": "http-server -p 8443 -S -C ssl/cert.pem -K ssl/key.pem -c-1",
+    "dev:https": "npm run build && npm run serve:https",
+    "setup:ssl": "mkdir -p ssl && openssl req -x509 -newkey rsa:4096 -keyout ssl/key.pem -out ssl/cert.pem -days 365 -nodes -subj \"/C=US/ST=State/L=City/O=Organization/CN=localhost\""
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +19,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.25.5",
+    "http-server": "^14.1.1",
     "tslib": "^2.8.1",
     "typescript": "^5.8.3"
   }
