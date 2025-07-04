@@ -55,15 +55,15 @@
 	<div id="slug-container">
 		<i class="icon-rotate-double-right"></i> initializing...
 	</div>
-	<div class="manual-input">
-		<p class="u-spacing-l action-medium">Manual input</p>
+	<form id="manual-input-form" class="manual-input">
+		<label for="newUrlSlug" class="u-spacing-l action-medium">Manual input</label>
 		<div>
 			<div class="text-field">
-				<input class="text-field__input" type="text" name="newUrlSlug" placeholder="Enter url slug" />
+				<input id="newUrlSlug" class="text-field__input" type="text" name="newUrlSlug" placeholder="Enter url slug">
 			</div>
-			<button class="btn btn--primary" id="add-button">Add</button>
+			<button type="submit" class="btn btn--primary" id="add-button">Add</button>
 		</div>
-	</div>
+	</form>
 	<script src="./app.js"></script>
 </body>
 </html>

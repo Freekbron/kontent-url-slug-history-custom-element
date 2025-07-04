@@ -107,17 +107,15 @@ const addSlugToHistory = (urlSlug: string) => {
     displayHistory()
 }
 
-document.querySelector("#add-button")?.addEventListener(
-    'click',
-    (e) => {
-        const urlSlug = (document.querySelector("input[name=newUrlSlug]") as HTMLInputElement).value
-        if (!urlSlug){
-            alert("The URL slug cannot be empty")
-            return
-        }
-        addSlugToHistory(urlSlug)
+document.getElementById('manual-input-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const urlSlug = (document.querySelector("input[name=newUrlSlug]") as HTMLInputElement).value
+    if (!urlSlug){
+        alert("The URL slug cannot be empty")
+        return
     }
-)
+    addSlugToHistory(urlSlug)
+});
 
 const displayHistory = () => {
     if (!label) {
@@ -134,7 +132,7 @@ const displayHistory = () => {
                 if (disabled || historySlugItem !== currentPublishedUrlSlug){
                     return `<div>
                         ${!disabled ? `<div>
-                            <button class='btn btn--secondary btn--s' data-slug='${historySlugItem}'>
+                            <button type="button" class='btn btn--secondary btn--s' data-slug='${historySlugItem}'>
                                 <span>remove</span>
                             </button>
                         </div>` : ''}
